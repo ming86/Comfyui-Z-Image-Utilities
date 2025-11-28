@@ -474,8 +474,8 @@
           "link": 41
         },
         {
-          "name": "qwen_api",
-          "type": "QWEN_API",
+          "name": "api_config",
+          "type": "API_CONFIG",
           "link": 43
         }
       ],
@@ -568,8 +568,8 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "qwen_api",
-          "type": "QWEN_API",
+          "name": "api_config",
+          "type": "API_CONFIG",
           "links": [
             43
           ]
@@ -687,7 +687,7 @@
       0,
       39,
       1,
-      "QWEN_API"
+      "API_CONFIG"
     ]
   ],
   "groups": [

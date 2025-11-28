@@ -301,8 +301,8 @@ class Z_ImageAPIConfig:
             }
         }
     
-    RETURN_TYPES = ("QWEN_API",)
-    RETURN_NAMES = ("qwen_api",)
+    RETURN_TYPES = ("API_CONFIG",)
+    RETURN_NAMES = ("api_config",)
     FUNCTION = "configure"
     CATEGORY = "Z-Image"
     
@@ -340,7 +340,7 @@ class Z_ImagePromptEnhancer:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "qwen_api": ("QWEN_API",),
+                "api_config": ("API_CONFIG",),
                 "prompt": ("STRING", {
                     "multiline": True,
                     "default": "",
@@ -437,7 +437,7 @@ class Z_ImagePromptEnhancer:
     
     def enhance(
         self,
-        qwen_api: Dict,
+        api_config: Dict,
         prompt: str,
         output_language: str,
         temperature: float,
@@ -454,7 +454,7 @@ class Z_ImagePromptEnhancer:
         
         try:
             return self._enhance_internal(
-                qwen_api, prompt, output_language, 
+                api_config, prompt, output_language, 
                 temperature, max_tokens, retry_count, debug_lines
             )
         except Exception as e:
@@ -467,7 +467,7 @@ class Z_ImagePromptEnhancer:
     
     def _enhance_internal(
         self,
-        qwen_api: Dict,
+        api_config: Dict,
         prompt: str,
         output_language: str,
         temperature: float,
@@ -502,14 +502,14 @@ class Z_ImagePromptEnhancer:
         debug_lines.append(full_prompt)
         debug_lines.append("-" * 20)
         
-        logger.info(f"Sending request to {qwen_api['model']} with {retry_count} retries...")
+        logger.info(f"Sending request to {api_config['model']} with {retry_count} retries...")
         
-        client = qwen_api["client"]
+        client = api_config["client"]
         messages = [{"role": "user", "content": full_prompt}]
         
         response = client.chat(
             messages=messages,
-            model=qwen_api["model"],
+            model=api_config["model"],
             temperature=temperature,
             max_tokens=max_tokens,
             retry_count=retry_count,
@@ -549,7 +549,7 @@ class Z_ImagePromptEnhancerWithCLIP:
         return {
             "required": {
                 "clip": ("CLIP",),
-                "qwen_api": ("QWEN_API",),
+                "api_config": ("API_CONFIG",),
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
                 "output_language": (["auto", "english", "chinese"], {"default": "auto"}),
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.1, "max": 1.5, "step": 0.05}),
@@ -563,12 +563,12 @@ class Z_ImagePromptEnhancerWithCLIP:
     FUNCTION = "enhance_and_encode"
     CATEGORY = "Z-Image"
     
-    def enhance_and_encode(self, clip, qwen_api, prompt, output_language, temperature, max_tokens, retry_count):
+    def enhance_and_encode(self, clip, api_config, prompt, output_language, temperature, max_tokens, retry_count):
         """Enhance and encode with CLIP."""
         
         enhancer = Z_ImagePromptEnhancer()
         enhanced_prompt, debug_log = enhancer.enhance(
-            qwen_api=qwen_api, 
+            api_config=api_config, 
             prompt=prompt, 
             output_language=output_language,
             temperature=temperature, 
